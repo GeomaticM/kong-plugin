@@ -22,6 +22,7 @@ COPY kong/plugins /usr/local/openresty/site/lualib/kong/plugins/
 ENV KONG_CUSTOM_PLUGINS oidc
 
 COPY nginx-kong.conf /usr/local/kong/nginx-kong.conf
+COPY nginx.conf /usr/local/kong/nginx.conf
 COPY mobile-site /usr/local/kong/mobile-site/
 
 EXPOSE 8000 8443 8001 8444
@@ -30,4 +31,4 @@ STOPSIGNAL SIGTERM
 
 ENV KONG_NGINX_DAEMON off
 
-CMD ["/usr/local/openresty/nginx/sbin/nginx", "-c", "/usr/local/kong/nginx.conf", "-p", "/usr/local/kong/"]
+CMD ["/usr/local/openresty/nginx/sbin/nginx", "-c", "/usr/local/kong/nginx.conf", "-p", "/usr/local/kong/", "-g", "daemon off;"]
