@@ -16,17 +16,18 @@ RUN apk add --no-cache --virtual .build-deps wget tar ca-certificates \
 	&& rm -rf /tmp/etc \
 	&& apk del .build-deps
 
-
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x docker-entrypoint.sh
-ENTRYPOINT ["/docker-entrypoint.sh"]
+RUN kong prepare -p "/usr/local/kong"
 
 COPY kong/plugins /usr/local/openresty/site/lualib/kong/plugins/
-
 ENV KONG_CUSTOM_PLUGINS oidc
+
+COPY nginx-kong.conf /usr/local/kong/nginx-kong.conf
+COPY mobile-site /usr/local/kong/mobile-site/
 
 EXPOSE 8000 8443 8001 8444
 
 STOPSIGNAL SIGTERM
+
+ENV KONG_NGINX_DAEMON off
 
 CMD ["/usr/local/openresty/nginx/sbin/nginx", "-c", "/usr/local/kong/nginx.conf", "-p", "/usr/local/kong/"]
