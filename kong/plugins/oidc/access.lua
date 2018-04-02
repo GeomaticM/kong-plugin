@@ -1,19 +1,16 @@
 local http = require("resty.http")
+local responses = require "kong.tools.responses"
 
 local ngx_get_headers = ngx.req.get_headers
+local url_encode = ngx.escape_uri
 
 local _M = {}
-
-local function authenticate(conf)
-	local client = http.new()
-	
-end
 
 function _M.execute(conf)
 	local headers = ngx_get_headers()
 	local token = headers["authorization"]
   if not token then
-  	authenticate(conf)
+  	return responses.send(401, "未授权用户，请先登录")
   end 
 end
 
